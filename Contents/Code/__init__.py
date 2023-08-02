@@ -163,6 +163,10 @@ class PLEXNFO(PlexMovieAgent):
         metadata.collections.clear()
         for collectionset in set_list:
             metadata.collections.add(collectionset)
+
+        # Add containing folder to collections
+        containing_folder = os.path.basename(movie_folder)
+        metadata.collections.add(containing_folder)
             
         # Actors
         actor_list = NFO.get_actors()

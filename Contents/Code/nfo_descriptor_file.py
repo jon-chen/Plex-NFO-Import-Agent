@@ -89,7 +89,10 @@ class NfoDescriptorFile():
             if (votes > rating_votes):
                 rating_votes = votes
                 value = rating.getElementsByTagName('value')[0].firstChild.data
-                rating_value = float((str(value) or "").strip())
+                try:
+                    rating_value = float(str(value).strip())
+                except:
+                    pass
         
         return rating_value
     
