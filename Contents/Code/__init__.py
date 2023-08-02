@@ -71,7 +71,8 @@ class PLEXNFO(PlexMovieAgent):
         log('Media file: %s', movie_path)
         
         movie_folder = os.path.dirname(movie_path)
-        nfo_path = find_nfo_file_in_folder(movie_folder)
+        file_name = os.path.basename(movie_path)
+        nfo_path = find_nfo_file_in_folder(movie_folder, file_name)
         if nfo_path == None:
             log("Unable to find NFO file for this movie!")
             return
@@ -108,7 +109,8 @@ class PLEXNFO(PlexMovieAgent):
         log('UPDATE ::: Title(%s):File(%s)', media.title, movie_path)
         
         movie_folder = os.path.dirname(movie_path)        
-        nfo_path = find_nfo_file_in_folder(movie_folder)
+        file_name = os.path.basename(movie_path)
+        nfo_path = find_nfo_file_in_folder(movie_folder, file_name)
         if nfo_path == None:
             log("Unable to find NFO file for this movie!")
             return

@@ -1,5 +1,6 @@
 import os
 import re
+import string
 from xml.dom import minidom
 from dateutil.parser import parse
 
@@ -12,8 +13,14 @@ class NfoDescriptorFile():
         if(os.path.isfile(self.nfo_file_path) is False):
             raise FileNotFoundError("NFO file does not exist! %s", self.nfo_file_path)
         
-        nfo_data = minidom.parse(self.nfo_file_path)
-        self.nfo_movie = nfo_data.getElementsByTagName('movie')[0]
+        # nfo_data = minidom.parse(self.nfo_file_path)
+        file_contents = Core.storage.load(self.nfo_file_path)
+
+        # Log.Info(file_contents)
+        file_contents = "".join(filter(lambda x: x in set(string.printable), file_contents))
+        nfo_data = minidom.parseString(file_contents)
+
+        self.nfo_movie = nfo_data.getElementsByTagName('episodedetails')[0]
         
     
     def get_id(self, default=None):
@@ -38,7 +45,7 @@ class NfoDescriptorFile():
         return self.get_unique_root_element_value('outline', default)
     
     def get_year(self, default=None):
-        return int(self.get_unique_root_element_value('year', default))
+        return int(self.get_unique_root_element_value('aired', default).split("-")[0])
     
     def get_mpaa(self, default=None):
         #<mpaa>DK:A</mpaa>
@@ -54,7 +61,7 @@ class NfoDescriptorFile():
     def get_premiered(self, default=None):
         parsed_date = default
         try:
-            date_str = str(self.get_unique_root_element_value('premiered', default))
+            date_str = str(self.get_unique_root_element_value('aired', default))
             parsed_date = parse(date_str)
         except:
             pass
@@ -82,7 +89,7 @@ class NfoDescriptorFile():
             if (votes > rating_votes):
                 rating_votes = votes
                 value = rating.getElementsByTagName('value')[0].firstChild.data
-                rating_value = float(str(value).strip())
+                rating_value = float((str(value) or "").strip())
         
         return rating_value
     
